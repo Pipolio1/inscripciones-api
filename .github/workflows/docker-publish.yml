@@ -29,10 +29,13 @@ jobs:
       - name: Build with Maven
         run: ./mvnw clean package -DskipTests
 
+      - name: Set lowercase repository owner
+        run: echo "REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Build and push Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner | lower }}/inscripciones-api:latest .
-          docker push ghcr.io/${{ github.repository_owner | lower }}/inscripciones-api:latest
+          docker build -t ghcr.io/${REPO_OWNER}/inscripciones-api:latest .
+          docker push ghcr.io/${REPO_OWNER}/inscripciones-api:latest
